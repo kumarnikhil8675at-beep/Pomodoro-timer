@@ -22,55 +22,37 @@ canvas.grid(column=2,row=2)
 display=Label(text="Work",font=('Arial',40),bg=YELLOW,fg=GREEN)
 display.grid(column=2,row=1)
 
-running=False
-Work_time=True
 finalbreak=0
 
 def timestart():
-    global running
+    global finalbreak
+    finalbreak +=1
     
-    if not running:
-        running=True
+    if finalbreak%8==0:
+        stopwatch(20*60)
+        
+    if finalbreak%2==0:
+        stopwatch(5*60)
+    else:
         stopwatch(25*60)
         
 def stopwatch(macho):
-    global watch,finalbreak,Work_time
     
-    if running:
-        minutes= macho // 60
-        seconds=macho % 60
+    minutes= macho // 60
+    seconds=macho % 60
             
-        canvas.itemconfig(time,text=f"{minutes:02}:{seconds:02}")
+    canvas.itemconfig(time,text=f"{minutes:02}:{seconds:02}")
         
-        if minutes==0 and Work_time==True:
-            Work_time=False
-            display.config(text="Break",font=('Arial',40))
-            finalbreak +=1
-            count=""
-            for a in range(finalbreak):
-                count +="✔"
-            howmany.config(text=count)
-            if finalbreak==4:
-                macho=20*60
-            else:macho=5*60
-        elif minutes==0 and Work_time==False:
-            if finalbreak==4:
-                Work_time=True
-                finalbreak=0
-                display.config(text="Work",font=('Arial',40))
-                macho=25*60
-            else:
-                Work_time=True
-                display.config(text="Work",font=('Arial',40))
-                macho=25*60
-            
+    if minutes>0:
         window.after(10,stopwatch,macho-1)
+    else:
+        timestart()
     
 def timereset():
-    global running,finalbreak
+    global finalbreak
 
-    finalbreak=0
-    running=False
+    # finalbreak=0
+    # running=False
     canvas.itemconfig(time,text=f"00:00")
     howmany.config(text="")
 
