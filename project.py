@@ -22,29 +22,27 @@ canvas.grid(column=2,row=2)
 display=Label(text="Work",font=('Arial',40),bg=YELLOW,fg=GREEN)
 display.grid(column=2,row=1)
 
-watch=0
 running=False
 Work_time=True
 finalbreak=0
 
 def timestart():
-    global watch,running
+    global running
     
     if not running:
         running=True
-        stopwatch()
+        stopwatch(25*60)
         
-def stopwatch():
+def stopwatch(macho):
     global watch,finalbreak,Work_time
     
     if running:
-        watch +=1
-        minutes= watch // 60
-        seconds=watch % 60
+        minutes= macho // 60
+        seconds=macho % 60
             
         canvas.itemconfig(time,text=f"{minutes:02}:{seconds:02}")
         
-        if minutes==WORK_MIN and Work_time==True:
+        if minutes==0 and Work_time==True:
             Work_time=False
             display.config(text="Break",font=('Arial',40))
             finalbreak +=1
@@ -52,25 +50,25 @@ def stopwatch():
             for a in range(finalbreak):
                 count +="✔"
             howmany.config(text=count)
-            watch=0
-        elif (minutes==SHORT_BREAK_MIN or minutes==LONG_BREAK_MIN) and Work_time==False:
             if finalbreak==4:
-                if minutes==LONG_BREAK_MIN:
-                    Work_time=True
-                    finalbreak=0
-                    display.config(text="Work",font=('Arial',40))
-                    watch=0
+                macho=20*60
+            else:macho=5*60
+        elif minutes==0 and Work_time==False:
+            if finalbreak==4:
+                Work_time=True
+                finalbreak=0
+                display.config(text="Work",font=('Arial',40))
+                macho=25*60
             else:
                 Work_time=True
                 display.config(text="Work",font=('Arial',40))
-                watch=0
+                macho=25*60
             
-        window.after(1000,stopwatch)
+        window.after(10,stopwatch,macho-1)
     
 def timereset():
-    global watch,running,finalbreak
-    
-    watch=0
+    global running,finalbreak
+
     finalbreak=0
     running=False
     canvas.itemconfig(time,text=f"00:00")
