@@ -27,14 +27,17 @@ finalbreak=0
 def timestart():
     global finalbreak
     finalbreak +=1
+    print(finalbreak)
     
     if finalbreak%8==0:
         stopwatch(20*60)
-        
-    if finalbreak%2==0:
+        display.config(text="Break",font=('Arial',40),fg=PINK)
+    elif finalbreak%2==0:
         stopwatch(5*60)
+        display.config(text="Break",font=('Arial',40),fg=RED)
     else:
         stopwatch(25*60)
+        display.config(text="Work",font=('Arial',40),fg=GREEN)
         
 def stopwatch(macho):
     
@@ -44,7 +47,7 @@ def stopwatch(macho):
     canvas.itemconfig(time,text=f"{minutes:02}:{seconds:02}")
         
     if minutes>0:
-        window.after(10,stopwatch,macho-1)
+        window.after(1,stopwatch,macho-1)
     else:
         timestart()
     
