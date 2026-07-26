@@ -8,6 +8,8 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
+timers=None
+rep=0
 
 window=Tk()
 window.title("Pomodoro")
@@ -19,45 +21,52 @@ canvas.create_image(100,112,image=background)
 time=canvas.create_text(100,130,text="00:00",fill="white",font=('Arial',30,'bold'))
 canvas.grid(column=2,row=2)
 
-display=Label(text="Work",font=('Arial',40),bg=YELLOW,fg=GREEN)
-display.grid(column=2,row=1)
-
-finalbreak=0
+# <-------------------------------StartTimer-------------------------------------->
 
 def timestart():
-    global finalbreak
-    finalbreak +=1
-    print(finalbreak)
+    global rep
+    rep +=1
     
-    if finalbreak%8==0:
-        stopwatch(20*60)
+    if rep%8==0:
+        stopwatch(LONG_BREAK_MIN*60)
         display.config(text="Break",font=('Arial',40),fg=PINK)
-    elif finalbreak%2==0:
-        stopwatch(5*60)
+    elif rep%2==0:
+        stopwatch(SHORT_BREAK_MIN*60)
         display.config(text="Break",font=('Arial',40),fg=RED)
     else:
-        stopwatch(25*60)
+        stopwatch(WORK_MIN*60)
         display.config(text="Work",font=('Arial',40),fg=GREEN)
-        
-def stopwatch(macho):
     
+# <-------------------------------TimerMekanism-------------------------------------->
+       
+def stopwatch(macho):
     minutes= macho // 60
     seconds=macho % 60
-            
+                
     canvas.itemconfig(time,text=f"{minutes:02}:{seconds:02}")
-        
+            
     if minutes>0:
-        window.after(1,stopwatch,macho-1)
+        global timers
+        timers=window.after(10,stopwatch,macho-1)
     else:
         timestart()
-    
-def timereset():
-    global finalbreak
+        count=""
+        for a in range(rep//2):
+            count +="✔"
+        howmany.config(text=count)
+        
+# <-------------------------------RestTimer-------------------------------------->
 
-    # finalbreak=0
-    # running=False
-    canvas.itemconfig(time,text=f"00:00")
+def timereset():
+    global rep
+    rep=0
+    window.after_cancel(timers)
+    canvas.itemconfig(time,text="00:00")
+    display.config(text="Timer")
     howmany.config(text="")
+    
+display=Label(text="Timer",font=('Arial',40),bg=YELLOW,fg=GREEN)
+display.grid(column=2,row=1)
 
 start=Button(text="Start",font=('Arial',20),command=timestart)
 start.grid(column=1,row=3)
