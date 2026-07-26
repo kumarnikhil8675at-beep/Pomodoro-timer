@@ -47,7 +47,7 @@ def stopwatch(macho):
             
     if minutes>0:
         global timers
-        timers=window.after(10,stopwatch,macho-1)
+        timers=window.after(1000,stopwatch,macho-1)
     else:
         timestart()
         count=""
